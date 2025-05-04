@@ -41,11 +41,8 @@
   <div id="comments"></div>
 
   <script>
-    // Fake admin flag — ONLY accessible when "admin" is true
-    const isAdmin = window.location.hash === "#admin";
-    if (isAdmin) {
-      var flag = "FLAG{stored_xss_wins}";
-    }
+    // Make the flag always available
+    window.flag = "FLAG{stored_xss_wins}";
 
     const commentsDiv = document.getElementById("comments");
 
@@ -55,7 +52,7 @@
       stored.forEach(c => {
         const p = document.createElement("div");
         p.className = "comment";
-        p.innerHTML = c; // ❗ Vulnerable to XSS
+        p.innerHTML = c; // ❗ Stored XSS vulnerability
         commentsDiv.appendChild(p);
       });
     }
