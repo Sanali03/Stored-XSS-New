@@ -26,11 +26,20 @@
       margin-top: 10px;
       border: 1px solid #ccc;
     }
+    .reset-btn {
+      margin-top: 20px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+
   <script>
-    // Set flag before anything else
+    // Set the flag early and globally
     window.flag = "FLAG{stored_xss_wins}";
   </script>
 
@@ -41,6 +50,8 @@
     <textarea id="commentInput" rows="4" placeholder="Type your comment here..."></textarea><br>
     <button type="submit">Submit Comment</button>
   </form>
+
+  <button class="reset-btn" onclick="resetComments()">Reset Comments</button>
 
   <h2>Previous Comments</h2>
   <div id="comments"></div>
@@ -54,7 +65,7 @@
       stored.forEach(c => {
         const p = document.createElement("div");
         p.className = "comment";
-        p.innerHTML = c; // Stored XSS vulnerability
+        p.innerHTML = c; // Vulnerable to XSS
         commentsDiv.appendChild(p);
       });
     }
@@ -68,6 +79,11 @@
       localStorage.setItem("comments", JSON.stringify(stored));
       input.value = "";
       loadComments();
+    }
+
+    function resetComments() {
+      localStorage.clear();
+      location.reload();
     }
 
     loadComments();
