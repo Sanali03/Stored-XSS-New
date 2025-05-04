@@ -29,8 +29,13 @@
   </style>
 </head>
 <body>
+  <script>
+    // Set flag before anything else
+    window.flag = "FLAG{stored_xss_wins}";
+  </script>
+
   <h1>Guestbook</h1>
-  <p>Leave a comment below!</p>
+  <p>Leave a comment below! 😊</p>
 
   <form onsubmit="saveComment(event)">
     <textarea id="commentInput" rows="4" placeholder="Type your comment here..."></textarea><br>
@@ -41,8 +46,6 @@
   <div id="comments"></div>
 
   <script>
-    window.flag = "FLAG{stored_xss_wins}"; // GLOBAL flag
-
     const commentsDiv = document.getElementById("comments");
 
     function loadComments() {
@@ -51,7 +54,7 @@
       stored.forEach(c => {
         const p = document.createElement("div");
         p.className = "comment";
-        p.innerHTML = c; // Stored XSS here
+        p.innerHTML = c; // Stored XSS vulnerability
         commentsDiv.appendChild(p);
       });
     }
