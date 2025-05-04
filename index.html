@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Guestbook - Stored XSS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      color: #444;
+    }
+    textarea, button {
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    .comment {
+      background: #fff;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Guestbook</h1>
+  <p>Leave a comment below! 😊</p>
+
+  <form onsubmit="saveComment(event)">
+    <textarea id="commentInput" rows="4" placeholder="Type your comment here..."></textarea><br>
+    <button type="submit">Submit Comment</button>
+  </form>
+
+  <h2>Previous Comments</h2>
+  <div id="comments"></div>
+
+  <script>
+    // Fake admin flag — ONLY accessible when "admin" is true
+    const isAdmin = window.location.hash === "#admin";
+    if (isAdmin) {
+      var flag = "FLAG{stored_xss_wins}";
+    }
+
+    const commentsDiv = document.getElementById("comments");
+
+    function loadComments() {
+      const stored = JSON.parse(localStorage.getItem("comments") || "[]");
+      commentsDiv.innerHTML = "";
+      stored.forEach(c => {
+        const p = document.createElement("div");
+        p.className = "comment";
+        p.innerHTML = c; // ❗ Vulnerable to XSS
+        commentsDiv.appendChild(p);
+      });
+    }
+
+    function saveComment(e) {
+      e.preventDefault();
+      const input = document.getElementById("commentInput");
+      const newComment = input.value;
+      const stored = JSON.parse(localStorage.getItem("comments") || "[]");
+      stored.push(newComment);
+      localStorage.setItem("comments", JSON.stringify(stored));
+      input.value = "";
+      loadComments();
+    }
+
+    loadComments();
+  </script>
+</body>
+</html>
